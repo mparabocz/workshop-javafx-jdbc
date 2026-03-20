@@ -10,6 +10,7 @@ import java.util.List;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegrityException;
 import model.dao.DepartmentDao;
 import model.entities.Department;
 
@@ -70,7 +71,11 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			st.setInt(1, id);
 			st.executeUpdate();
 		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
+			if (e.getMessage().contains("foreign key constraint")) {
+				throw new DbIntegrityException(e.getMessage());
+			} else {
+				throw new DbException(e.getMessage());
+			}
 		} finally {
 			DB.closeStatement(st);
 		}
