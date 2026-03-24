@@ -1,6 +1,9 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -132,9 +135,28 @@ public class SellerFormController implements Initializable {
 		}
 		obj.setName(txtName.getText());
 
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exception.addError("email", "Field cannot be empty.");
+		}
+		obj.setEmail(txtEmail.getText());
+
+		if (dpDate.getValue() == null) {
+			exception.addError("date", "Field cannot be empty.");
+		} else {
+			Instant instant = Instant.from(dpDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setDate(LocalDate.ofInstant(instant, ZoneId.systemDefault()));
+		}
+		if (txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
+			exception.addError("baseSalary", "Field cannot be empty.");
+		}
+		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
+
 		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
+
+		obj.setDepartment(comboBoxDepartment.getValue());
+
 		return obj;
 	}
 
@@ -190,6 +212,23 @@ public class SellerFormController implements Initializable {
 		Set<String> fields = errors.keySet();
 		if (fields.contains("name")) {
 			labelErrorName.setText(errors.get("name"));
+		} else {
+			labelErrorName.setText("");
+		}
+		if (fields.contains("email")) {
+			labelErrorEmail.setText(errors.get("email"));
+		} else {
+			labelErrorEmail.setText("");
+		}
+		if (fields.contains("date")) {
+			labelErrorDate.setText(errors.get("date"));
+		} else {
+			labelErrorDate.setText("");
+		}
+		if (fields.contains("baseSalary")) {
+			labelErrorBaseSalary.setText(errors.get("baseSalary"));
+		} else {
+			labelErrorBaseSalary.setText("");
 		}
 	}
 
