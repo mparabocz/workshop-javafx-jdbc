@@ -34,3 +34,6 @@ nbdist/
 
 # Eclispe
 .settings/
+
+# Database
+db.properties
